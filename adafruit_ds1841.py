@@ -78,8 +78,8 @@ class DS1841:
 
     _eeprom_shadow_bit = RWBit(_DS1841_CR0, 7)
 
-    _adder_mode_bit = RWBit(_DS1841_CR1, 0)
-    _update_mode_bit = RWBit(_DS1841_CR1, 1)
+    _adder_mode_bit = RWBit(_DS1841_CR1, 1)
+    _update_mode_bit = RWBit(_DS1841_CR1, 0)
 
     _lut_address_mode_bit = RWBit(_DS1841_CR2, 1)
     _wiper_access_bit = RWBit(_DS1841_CR2, 2)
@@ -90,7 +90,6 @@ class DS1841:
         # no good way of identifying the chip
 
         self._eeprom_shadow_bit = True # turn off eeprom updates to IV
-
         self._adder_mode_bit = False # Don't add IV to WR
         self._update_mode_bit = True # update voltage and temp
 
