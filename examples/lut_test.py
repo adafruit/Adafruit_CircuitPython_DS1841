@@ -3,37 +3,38 @@ import board
 import busio
 import adafruit_ds1841
 import adafruit_debug_i2c
+from analogio import AnalogIn
 
-# def settings(ds):
-#     ctrl1 = ds._control_register_1
-#     ctrl2 = ds._control_register_2
-
-#     update_mode = ctrl1 & 0x1 > 0
-#     adder_mode = ctrl1 & 0x2 > 0
-
-#     lutar = ctrl2 & 0x2 > 0
-#     wiper_access = ctrl2 & 0x4 > 0
-
-#     print("Update Mode:", update_mode, "Adder Mode:", adder_mode, "Lutar:", lutar, "Wiper Access:", wiper_access)
+# WIRING:
+# * Wire connecting  VCC to RH to make a voltage divider
+# * Wire connecting RW to A0
+def wiper_voltage(wiper_pin):
+    raw_value =  wiper_pin.value
+    return (raw_value/(2**16-1) * wiper_pin.reference_voltage)
 
 i2c = busio.I2C(board.SCL, board.SDA)
-i2c = adafruit_debug_i2c.DebugI2C(i2c)
 ds = adafruit_ds1841.DS1841(i2c)
-# settings(ds)
-# while True:
 
-#     print("Temperature = %.2f *C"%ds.temperature)
-#     print("voltage:", ds.voltage, "mV")
 
-#     ds.initial_value = 0
-#     time.sleep(1.0)
-#     print("\t\tWiper 1 = %d"%ds.wiper)
-#     print("")
-#     print("\t\tInitial Value 1: = %d"%ds.initial_value)
-#     print("")
-#     ds.initial_value = 69
-#     time.sleep(1.0)
-#     print("\t\t\tWiper 2 = %d"%ds.wiper)
-#     print("")
-#     print("\t\t\tInitial Value 2: = %d"%ds.initial_value)
-#     print("")
+LUT_MAX_INDEX = 71
+WIPER_MAX = 127
+wiper_pin = AnalogIn(board.A0)
+
+ds.lut_mode_enabled = True
+
+# you only need to run this once per DS1841 since the LUT is stored to EEPROM
+# for i in range(0, LUT_MAX_INDEX+1):
+#     new_lut_val = WIPER_MAX-i
+#     ds.set_lut(i, new_lut_val)
+
+while True:
+    for i in range(0, LUT_MAX_INDEX+1):
+        ds.look_up = i
+        # for printing to serial terminal:
+        print("\tLUTAR: %s"%hex(ds.look_up),
+            "\tWiper = %d"%ds.wiper,
+            "\tWiper Voltage: %f"%wiper_voltage(wiper_pin) )
+        time.sleep(0.5)
+
+        # uncomment this and comment out the above to print out a mu plotter friendly format (tuple)
+        # print((wiper_voltage(wiper_pin),))

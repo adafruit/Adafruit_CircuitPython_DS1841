@@ -60,17 +60,15 @@ _DS1841_WR	= 0x09
 _DS1841_CR2	= 0x0A
 _DS1841_TEMP	= 0x0C
 _DS1841_VOLTAGE	= 0x0E
-_DS1841_LUT	= 0x80
-#_DS1841_LUT	= 0x80–C7h
+_DS1841_LUT	= 0x80 # to C7h
 
 _DS1841_VCC_LSB = 25.6
 _DS1841_DEFAULT_ADDRESS = 0x28 # up to 0x2B
 
-
 class DS1841:
 
     _initial_value_register = UnaryStruct(_DS1841_IVR, ">B")
-    _lut_address_register = UnaryStruct(_DS1841_LUTAR, ">B")
+    _lut_address = UnaryStruct(_DS1841_LUTAR, ">B")
     _wiper_register = UnaryStruct(_DS1841_WR, ">B")
     _control_register_0 = UnaryStruct(_DS1841_CR0, ">B")
     _control_register_1 = UnaryStruct(_DS1841_CR1, ">B")
@@ -82,10 +80,10 @@ class DS1841:
     shadow_disable = RWBit(_DS1841_CR0, 7)
 
     _adder_mode_bit = RWBit(_DS1841_CR1, 1)
-    _update_mode_bit = RWBit(_DS1841_CR1, 0)
+    update_mode = RWBit(_DS1841_CR1, 0)
 
-    _lut_address_mode_bit = RWBit(_DS1841_CR2, 1)
-    _wiper_access_bit = RWBit(_DS1841_CR2, 2)
+    _lut_address_en = RWBit(_DS1841_CR2, 1)
+    wiper_access = RWBit(_DS1841_CR2, 2)
     _lut = StructArray(_DS1841_LUT, ">B", 72)
 
     def __init__(self, i2c_bus, address=_DS1841_DEFAULT_ADDRESS):
@@ -98,8 +96,9 @@ class DS1841:
         # UPDATE MODE MUST BE FALSE FOR WIPER TO SHADOW IV
         # self._update_mode_bit = True # update voltage and temp
 
-        self._lut_address_mode_bit = True #
-        self._wiper_access_bit = True # update WR by I2C
+        self._lut_address_en = True #
+        self.wiper_access_bit = False # update WR by I2C
+        self.lut_mode_enabled = False
 
     @property
     def wiper(self):
@@ -130,5 +129,34 @@ class DS1841:
     def voltage(self):
         return self._voltage_register * _DS1841_VCC_LSB
 
+    @property
+    def lut_mode_enabled(self):
+        return self._lut_mode_enabled
 
+    @lut_mode_enabled.setter
+    def lut_mode_enabled(self, value):
+        self._lut_address_en = value
+        self.update_mode = value
+        self.wiper_access = not value
+        self._lut_mode_enabled = value
+
+    def set_lut(self, index, value):
+        if value > 127:
+            raise IndexError("set_lut value must be from 0-127")
+        lut_value_byte = bytearray([value])
+        self._lut[index] = lut_value_byte
+        sleep(0.020)
+
+    @property
+    def look_up(self):
+        if not self._lut_mode_enabled:
+            raise RuntimeError("lut_mode_enabled must be equal to True to use look_up")
+        return (self._lut_address-_DS1841_LUT)
+
+    @look_up.setter
+    def look_up(self, value):
+        if value > 71 or value < 0:
+            raise IndexError("look_up value must be from 0-71")
+        self._lut_address = value+_DS1841_LUT
+        sleep(0.020)
 
