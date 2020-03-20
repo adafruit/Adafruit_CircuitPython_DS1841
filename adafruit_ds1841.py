@@ -32,7 +32,7 @@ Implementation Notes
 
 **Hardware:**
 
-* Adafruit's DPS1841 Breakout: https://www.adafruit.com/product/4560
+* Adafruit's DPS1841 Breakout: https://www.adafruit.com/product/4570
 
 **Software and Dependencies:**
 
@@ -67,40 +67,37 @@ _DS1841_DEFAULT_ADDRESS = 0x28 # up to 0x2B
 
 class DS1841:
 
-    _initial_value_register = UnaryStruct(_DS1841_IVR, ">B")
     _lut_address = UnaryStruct(_DS1841_LUTAR, ">B")
     _wiper_register = UnaryStruct(_DS1841_WR, ">B")
-    _control_register_0 = UnaryStruct(_DS1841_CR0, ">B")
-    _control_register_1 = UnaryStruct(_DS1841_CR1, ">B")
-    _control_register_2 = UnaryStruct(_DS1841_CR2, ">B")
 
     _temperature_register = UnaryStruct(_DS1841_TEMP, ">b")
     _voltage_register = UnaryStruct(_DS1841_VOLTAGE, ">B")
 
-    shadow_disable = RWBit(_DS1841_CR0, 7)
-
+    # NV-capable settings
+    _disable_save_to_eeprom = RWBit(_DS1841_CR0, 7)
+    # Can be shadowed by EEPROM
+    _initial_value_register = UnaryStruct(_DS1841_IVR, ">B")
     _adder_mode_bit = RWBit(_DS1841_CR1, 1)
-    update_mode = RWBit(_DS1841_CR1, 0)
+    _update_mode = RWBit(_DS1841_CR1, 0)
 
-    _lut_address_en = RWBit(_DS1841_CR2, 1)
-    wiper_access = RWBit(_DS1841_CR2, 2)
+    _manual_lut_address = RWBit(_DS1841_CR2, 1)
+    _manual_wiper_value = RWBit(_DS1841_CR2, 2)
+
     _lut = StructArray(_DS1841_LUT, ">B", 72)
 
     def __init__(self, i2c_bus, address=_DS1841_DEFAULT_ADDRESS):
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
-        # no good way of identifying the chip
-
-        self.shadow_disable = True # turn off eeprom updates to IV and CR0
-        # self._adder_mode_bit = False # Don't add IV to WR
+        self._disable_save_to_eeprom = True # turn off eeprom updates to IV and CR0
+        self._adder_mode_bit = False # Don't add IV to WR
         # UPDATE MODE MUST BE FALSE FOR WIPER TO SHADOW IV
-        # self._update_mode_bit = True # update voltage and temp
 
-        self._lut_address_en = True #
-        self.wiper_access_bit = False # update WR by I2C
-        self.lut_mode_enabled = False
+        self._manual_lut_address = True #
+        self._manual_wiper_value = True # update WR by I2C
+        self._lut_mode_enabled = False
+        self._update_mode = True
 
-    @property
+   @property
     def wiper(self):
         return self._wiper_register
 
@@ -118,9 +115,17 @@ class DS1841:
     def initial_value(self, value):
         if value > 127:
             raise AttributeError("initial_value must be from 0-127")
-
+        self._disable_save_to_eeprom = False
+        # allows for IV to pass through to WR.
+        # this setting is also saved to EEPROM so IV will load into WR on boot
+        self._update_mode = False
+        sleep(0.2)
         self._initial_value_register = value
-
+        sleep(0.2)
+        self._disable_save_to_eeprom = True
+        # Turn update mode back on so temp and voltage update
+        # and LUT usage works
+        self._update_mode = True
     @property
     def temperature(self):
         return self._temperature_register
@@ -129,15 +134,16 @@ class DS1841:
     def voltage(self):
         return self._voltage_register * _DS1841_VCC_LSB
 
+    ######## LUTS on LUTS on LUTS
     @property
     def lut_mode_enabled(self):
         return self._lut_mode_enabled
 
     @lut_mode_enabled.setter
     def lut_mode_enabled(self, value):
-        self._lut_address_en = value
-        self.update_mode = value
-        self.wiper_access = not value
+        self._manual_lut_address = value
+        self._update_mode = True
+        self._manual_wiper_value = not value
         self._lut_mode_enabled = value
 
     def set_lut(self, index, value):
