@@ -17,7 +17,7 @@ Introduction
     :target: https://github.com/psf/black
     :alt: Code Style: Black
 
-I2C Logarithmic Resistor
+CircuitPython library for the Maxim DS1841 I2C Logarithmic Resistor
 
 
 Dependencies
