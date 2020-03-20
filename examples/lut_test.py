@@ -9,8 +9,9 @@ from analogio import AnalogIn
 # * Wire connecting  VCC to RH to make a voltage divider
 # * Wire connecting RW to A0
 def wiper_voltage(wiper_pin):
-    raw_value =  wiper_pin.value
-    return (raw_value/(2**16-1) * wiper_pin.reference_voltage)
+    raw_value = wiper_pin.value
+    return raw_value / (2 ** 16 - 1) * wiper_pin.reference_voltage
+
 
 i2c = busio.I2C(board.SCL, board.SDA)
 ds = adafruit_ds1841.DS1841(i2c)
@@ -28,12 +29,14 @@ ds.lut_mode_enabled = True
 #     ds.set_lut(i, new_lut_val)
 
 while True:
-    for i in range(0, LUT_MAX_INDEX+1):
+    for i in range(0, LUT_MAX_INDEX + 1):
         ds.look_up = i
         # for printing to serial terminal:
-        print("\tLUTAR: %s"%hex(ds.look_up),
-            "\tWiper = %d"%ds.wiper,
-            "\tWiper Voltage: %f"%wiper_voltage(wiper_pin) )
+        print(
+            "\tLUTAR: %s" % hex(ds.look_up),
+            "\tWiper = %d" % ds.wiper,
+            "\tWiper Voltage: %f" % wiper_voltage(wiper_pin),
+        )
         time.sleep(0.5)
 
         # uncomment this and comment out the above to print out a mu plotter friendly format (tuple)

@@ -23,14 +23,13 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-.. todo:: Add any Learn guide links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    Learn Guide <https://learn.adafruit.com/ds1841-i2c-potentiometer>
 
 .. toctree::
     :caption: Related Products
 
-.. todo:: Add any product links here. If there are none, then simply delete this todo and leave
-    the toctree above for use later.
+    `Adafruit DS1841 <https://www.adafruit.com/product/4286>`_
+
 
 .. toctree::
     :caption: Other Links

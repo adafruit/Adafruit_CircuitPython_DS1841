@@ -1,25 +1,46 @@
-import time
+from time import sleep
 import board
-import busio
+from analogio import AnalogIn
 import adafruit_ds1841
-import adafruit_debug_i2c
 
+####### NOTE ################
+# this example will not work with Blinka/rasberry Pi due to the lack of analog pins.
+# Blinka and Raspberry Pi users should run the "ds1841_blinka_simpletest.py" example
+
+# setup of the i2c bus giving the SCL (clock) and SDA (data) pins from the board
 i2c = busio.I2C(board.SCL, board.SDA)
-i2c = adafruit_debug_i2c.DebugI2C(i2c)
-ds = adafruit_ds1841.DS1841(i2c)
-while True:
-    print("Temperature = %.2f *C"%ds.temperature)
-    print("voltage:", ds.voltage, "mV")
+# create the ds1841 instance giving the I2C bus we just set up
+ds1841 = adafruit_ds1841.DS1841(i2c)
 
-    ds.initial_value = 0
-    time.sleep(1.0)
-    print("\t\tWiper 1 = %d"%ds.wiper)
+# set up an analog input, selecting the A0 pin
+wiper_output = AnalogIn(board.A0)
+
+while True:
+
+    # set th
+    ds1841.wiper = 127
+    print("Wiper set to %d" % ds1841.wiper)
+    voltage = wiper_output.value
+    voltage *= 3.3
+    voltage /= 65535
+    print("Wiper voltage: %.2f V" % voltage)
     print("")
-    print("\t\tInitial Value 1: = %d"%ds.initial_value)
+    sleep(1.0)
+
+    ds1841.wiper = 0
+    print("Wiper set to %d" % ds1841.wiper)
+    voltage = wiper_output.value
+    voltage *= 3.3
+    voltage /= 65535
+    print("Wiper voltage: %.2f V" % voltage)
     print("")
-    ds.initial_value = 69
-    time.sleep(1.0)
-    print("\t\t\tWiper 2 = %d"%ds.wiper)
+    sleep(1.0)
+
+    ds1841.wiper = 63
+    print("Wiper set to %d" % ds1841.wiper)
+    voltage = wiper_output.value
+    voltage *= 3.3
+    voltage /= 65535
+    print("Wiper voltage: %.2f V" % voltage)
     print("")
-    print("\t\t\tInitial Value 2: = %d"%ds.initial_value)
-    print("")
+    sleep(1.0)

@@ -34,12 +34,6 @@ This is easily achieved by downloading
 
 Installing from PyPI
 =====================
-.. note:: This library is not available on PyPI yet. Install documentation is included
-   as a standard element. Stay tuned for PyPI availability!
-
-.. todo:: Remove the above note if PyPI version is/will be available at time of release.
-   If the library is not planned for PyPI, remove the entire 'Installing from PyPI' section.
-
 On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
 PyPI <https://pypi.org/project/adafruit-circuitpython-ds1841/>`_. To install for current user:
 
@@ -65,7 +59,51 @@ To install in a virtual environment in your current project:
 Usage Example
 =============
 
-.. todo:: Add a quick, simple example. It and other examples should live in the examples folder and be included in docs/examples.rst.
+.. code-block:: python
+
+    from time import sleep
+    import board
+    import busio
+    import adafruit_ds1841
+    from analogio import AnalogIn
+
+    ####### NOTE ################
+    # this example will not work with Blinka/rasberry Pi due to the lack of analog pins.
+    # Blinka and Raspberry Pi users should run the "ds1841_blinka_simpletest.py" example
+
+    i2c = busio.I2C(board.SCL, board.SDA)
+    ds1841 = adafruit_ds1841.DS1841(i2c)
+    wiper_output = AnalogIn(board.A0)
+
+    while True:
+
+        ds1841.wiper = 127
+        print("Wiper set to %d"%ds1841.wiper)
+        voltage = wiper_output.value
+        voltage *= 3.3
+        voltage /= 65535
+        print("Wiper voltage: %.2f"%voltage)
+        print("")
+        sleep(1.0)
+
+        ds1841.wiper = 0
+        print("Wiper set to %d"%ds1841.wiper)
+        voltage = wiper_output.value
+        voltage *= 3.3
+        voltage /= 65535
+        print("Wiper voltage: %.2f"%voltage)
+        print("")
+        sleep(1.0)
+
+        ds1841.wiper = 63
+        print("Wiper set to %d"%ds1841.wiper)
+        voltage = wiper_output.value
+        voltage *= 3.3
+        voltage /= 65535
+        print("Wiper voltage: %.2f"%voltage)
+        print("")
+        sleep(1.0)
+
 
 Contributing
 ============
