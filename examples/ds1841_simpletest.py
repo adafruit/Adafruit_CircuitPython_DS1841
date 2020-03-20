@@ -1,5 +1,6 @@
 from time import sleep
 import board
+import busio
 from analogio import AnalogIn
 import adafruit_ds1841
 

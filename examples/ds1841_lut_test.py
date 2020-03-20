@@ -1,9 +1,8 @@
 import time
 import board
 import busio
-import adafruit_ds1841
-import adafruit_debug_i2c
 from analogio import AnalogIn
+import adafruit_ds1841
 
 # WIRING:
 # 1 Wire connecting  VCC to RH to make a voltage divider using the
