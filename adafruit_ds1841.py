@@ -23,7 +23,7 @@
 `adafruit_ds1841`
 ================================================================================
 
-Library for the DPS1841 I2C Logarithmic Resistor
+Library for the DS1841 I2C Logarithmic Resistor
 
 * Author(s): Bryan Siepert
 
@@ -32,7 +32,7 @@ Implementation Notes
 
 **Hardware:**
 
-* Adafruit's DPS1841 Breakout: https://www.adafruit.com/product/4570
+* Adafruit's DS1841 Breakout: https://www.adafruit.com/product/4570
 
 **Software and Dependencies:**
 
