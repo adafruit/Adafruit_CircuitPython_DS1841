@@ -2,7 +2,7 @@ Introduction
 ============
 
 .. image:: https://readthedocs.org/projects/adafruit-circuitpython-ds1841/badge/?version=latest
-    :target: https://circuitpython.readthedocs.io/projects/ds1841/en/latest/
+    :target: https://adafruit-circuitpython-ds1841.readthedocs.io/en/latest/
     :alt: Documentation Status
 
 .. image:: https://img.shields.io/discord/327254708534116352.svg
