@@ -71,6 +71,11 @@ Usage Example
     # this example will not work with Blinka/rasberry Pi due to the lack of analog pins.
     # Blinka and Raspberry Pi users should run the "ds1841_blinka_simpletest.py" example
 
+    # WIRING:
+    # 1 Wire connecting  VCC to RH to make a voltage divider using the
+    #   internal resistor between RH and RW
+    # 2 Wire connecting RW to A0
+
     i2c = busio.I2C(board.SCL, board.SDA)
     ds1841 = adafruit_ds1841.DS1841(i2c)
     wiper_output = AnalogIn(board.A0)

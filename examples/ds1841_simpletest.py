@@ -7,6 +7,11 @@ import adafruit_ds1841
 # this example will not work with Blinka/rasberry Pi due to the lack of analog pins.
 # Blinka and Raspberry Pi users should run the "ds1841_blinka_simpletest.py" example
 
+# WIRING:
+# 1 Wire connecting  VCC to RH to make a voltage divider using the
+#   internal resistor between RH and RW
+# 2 Wire connecting RW to A0
+
 # setup of the i2c bus giving the SCL (clock) and SDA (data) pins from the board
 i2c = busio.I2C(board.SCL, board.SDA)
 # create the ds1841 instance giving the I2C bus we just set up

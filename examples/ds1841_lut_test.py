@@ -6,11 +6,12 @@ import adafruit_debug_i2c
 from analogio import AnalogIn
 
 # WIRING:
-# * Wire connecting  VCC to RH to make a voltage divider
-# * Wire connecting RW to A0
-def wiper_voltage(wiper_pin):
-    raw_value = wiper_pin.value
-    return raw_value / (2 ** 16 - 1) * wiper_pin.reference_voltage
+# 1 Wire connecting  VCC to RH to make a voltage divider using the
+#   internal resistor between RH and RW
+# 2 Wire connecting RW to A0
+def wiper_voltage(_wiper_pin):
+    raw_value = _wiper_pin.value
+    return raw_value / (2 ** 16 - 1) * _wiper_pin.reference_voltage
 
 
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -30,10 +31,10 @@ ds.lut_mode_enabled = True
 
 while True:
     for i in range(0, LUT_MAX_INDEX + 1):
-        ds.look_up = i
+        ds.lut_selection = i
         # for printing to serial terminal:
         print(
-            "\tLUTAR: %s" % hex(ds.look_up),
+            "\tLUTAR/LUT Selection: %s" % hex(ds.lut_selection),
             "\tWiper = %d" % ds.wiper,
             "\tWiper Voltage: %f" % wiper_voltage(wiper_pin),
         )
