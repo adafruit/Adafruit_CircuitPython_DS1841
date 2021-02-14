@@ -1,24 +1,7 @@
-# The MIT License (MIT)
+# SPDX-FileCopyrightText: 2020 Bryan Siepert for Adafruit Industries
 #
-# Copyright (c) 2020 Bryan Siepert for Adafruit Industries
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# SPDX-License-Identifier: MIT
+
 """
 `adafruit_ds1841`
 ================================================================================
@@ -104,7 +87,7 @@ class DS1841:
     @property
     def wiper(self):
         """The value of the potentionmeter's wiper.
-            :param wiper_value: The value from 0-127 to set the wiper to.
+        :param wiper_value: The value from 0-127 to set the wiper to.
         """
         return self._wiper_register
 
@@ -117,7 +100,7 @@ class DS1841:
     @property
     def wiper_default(self):
         """Sets the wiper's default value and current value to the given value
-            :param new_default: The value from 0-127 to set as the wiper's default.
+        :param new_default: The value from 0-127 to set as the wiper's default.
         """
 
         return self._initial_value_register
@@ -166,9 +149,9 @@ class DS1841:
 
     def set_lut(self, index, value):
         """Set the value of an entry in the Look Up Table.
-            :param index: The index of the entry to set, from 0-71.
-            :param value: The value to set at the given index. The `wiper` will be set to this
-            value when the LUT entry is selected using `lut_selection`
+        :param index: The index of the entry to set, from 0-71.
+        :param value: The value to set at the given index. The `wiper` will be set to this
+        value when the LUT entry is selected using `lut_selection`
         """
         if value > 127:
             raise IndexError("set_lut value must be from 0-127")
@@ -179,7 +162,7 @@ class DS1841:
     @property
     def lut_selection(self):
         """Choose the entry in the Look Up Table to use to set the wiper.
-            :param index: The index of the entry to use, from 0-71.
+        :param index: The index of the entry to use, from 0-71.
         """
         if not self._lut_mode_enabled:
             raise RuntimeError(

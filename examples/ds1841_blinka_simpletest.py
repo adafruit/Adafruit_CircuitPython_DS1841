@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
 ####### NOTE ################
 # This example is meant for use with Blinka/rasberry Pi due to the lack of analog pins.
 # CircuitPython board users should run the "ds1841_simpletest.py" example
