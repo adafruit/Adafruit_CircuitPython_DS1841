@@ -13,7 +13,7 @@ import adafruit_ds1841
 # 2 Wire connecting RW to A0
 def wiper_voltage(_wiper_pin):
     raw_value = _wiper_pin.value
-    return raw_value / (2 ** 16 - 1) * _wiper_pin.reference_voltage
+    return raw_value / (2**16 - 1) * _wiper_pin.reference_voltage
 
 
 i2c = busio.I2C(board.SCL, board.SDA)
