@@ -33,6 +33,11 @@ from adafruit_register.i2c_struct import UnaryStruct
 from adafruit_register.i2c_struct_array import StructArray
 from adafruit_register.i2c_bit import RWBit
 
+try:
+    import typing  # pylint: disable=unused-import
+    from busio import I2C
+except ImportError:
+    pass
 
 _DS1841_IVR = 0x00
 _DS1841_CR0 = 0x02
@@ -72,7 +77,7 @@ class DS1841:
 
     _lut = StructArray(_DS1841_LUT, ">B", 72)
 
-    def __init__(self, i2c_bus, address=_DS1841_DEFAULT_ADDRESS):
+    def __init__(self, i2c_bus: I2C, address: int = _DS1841_DEFAULT_ADDRESS) -> None:
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
         self._disable_save_to_eeprom = True  # turn off eeprom updates to IV and CR0
@@ -85,20 +90,20 @@ class DS1841:
         self._update_mode = True
 
     @property
-    def wiper(self):
+    def wiper(self) -> int:
         """The value of the potentionmeter's wiper.
         :param wiper_value: The value from 0-127 to set the wiper to.
         """
         return self._wiper_register
 
     @wiper.setter
-    def wiper(self, value):
+    def wiper(self, value: int) -> None:
         if value > 127:
             raise AttributeError("wiper must be from 0-127")
         self._wiper_register = value
 
     @property
-    def wiper_default(self):
+    def wiper_default(self) -> int:
         """Sets the wiper's default value and current value to the given value
         :param new_default: The value from 0-127 to set as the wiper's default.
         """
@@ -106,7 +111,7 @@ class DS1841:
         return self._initial_value_register
 
     @wiper_default.setter
-    def wiper_default(self, value):
+    def wiper_default(self, value: int) -> None:
         if value > 127:
             raise AttributeError("initial_value must be from 0-127")
         self._disable_save_to_eeprom = False
@@ -122,18 +127,18 @@ class DS1841:
         self._update_mode = True
 
     @property
-    def temperature(self):
-        """The current temperature in degrees celcius"""
+    def temperature(self) -> int:
+        """The current temperature in degrees celsius"""
         return self._temperature_register
 
     @property
-    def voltage(self):
+    def voltage(self) -> float:
         """The current voltage between VCC and GND"""
         return self._voltage_register * _DS1841_VCC_LSB
 
     ######## LUTS on LUTS on LUTS
     @property
-    def lut_mode_enabled(self):
+    def lut_mode_enabled(self) -> bool:
         """Enables LUT mode. LUT mode takes sets the value of the Wiper based on the entry in a
         72-entry Look Up Table. The LUT entry is selected using the `lut_selection`
         property to set an index from 0-71
@@ -141,13 +146,13 @@ class DS1841:
         return self._lut_mode_enabled
 
     @lut_mode_enabled.setter
-    def lut_mode_enabled(self, value):
+    def lut_mode_enabled(self, value: bool) -> None:
         self._manual_lut_address = value
         self._update_mode = True
         self._manual_wiper_value = not value
         self._lut_mode_enabled = value
 
-    def set_lut(self, index, value):
+    def set_lut(self, index: int, value: int) -> None:
         """Set the value of an entry in the Look Up Table.
         :param index: The index of the entry to set, from 0-71.
         :param value: The value to set at the given index. The `wiper` will be set to this
@@ -160,7 +165,7 @@ class DS1841:
         sleep(0.020)
 
     @property
-    def lut_selection(self):
+    def lut_selection(self) -> int:
         """Choose the entry in the Look Up Table to use to set the wiper.
         :param index: The index of the entry to use, from 0-71.
         """
@@ -171,7 +176,7 @@ class DS1841:
         return self._lut_address - _DS1841_LUT
 
     @lut_selection.setter
-    def lut_selection(self, value):
+    def lut_selection(self, value: int) -> None:
         if value > 71 or value < 0:
             raise IndexError("lut_selection value must be from 0-71")
         self._lut_address = value + _DS1841_LUT
