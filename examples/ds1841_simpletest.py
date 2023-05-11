@@ -25,7 +25,6 @@ ds1841 = adafruit_ds1841.DS1841(i2c)
 wiper_output = AnalogIn(board.A0)
 
 while True:
-
     # set th
     ds1841.wiper = 127
     print("Wiper set to %d" % ds1841.wiper)
