@@ -12,8 +12,10 @@
 # As this code runs, measure the voltage between ground and the RW (wiper) pin
 # with a multimeter. You should see the voltage change with each print statement.
 from time import sleep
+
 import board
 import busio
+
 import adafruit_ds1841
 
 i2c = busio.I2C(board.SCL, board.SDA)
