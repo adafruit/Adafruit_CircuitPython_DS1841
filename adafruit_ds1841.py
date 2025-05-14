@@ -28,13 +28,15 @@ __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_DS1841.git"
 
 from time import sleep
+
 from adafruit_bus_device import i2c_device
+from adafruit_register.i2c_bit import RWBit
 from adafruit_register.i2c_struct import UnaryStruct
 from adafruit_register.i2c_struct_array import StructArray
-from adafruit_register.i2c_bit import RWBit
 
 try:
-    import typing  # pylint: disable=unused-import
+    import typing
+
     from busio import I2C
 except ImportError:
     pass
@@ -84,7 +86,7 @@ class DS1841:
         self._adder_mode_bit = False  # Don't add IV to WR
         # UPDATE MODE MUST BE FALSE FOR WIPER TO SHADOW IV
 
-        self._manual_lut_address = True  #
+        self._manual_lut_address = True
         self._manual_wiper_value = True  # update WR by I2C
         self._lut_mode_enabled = False
         self._update_mode = True
@@ -170,9 +172,7 @@ class DS1841:
         :param index: The index of the entry to use, from 0-71.
         """
         if not self._lut_mode_enabled:
-            raise RuntimeError(
-                "lut_mode_enabled must be equal to True to use lut_selection"
-            )
+            raise RuntimeError("lut_mode_enabled must be equal to True to use lut_selection")
         return self._lut_address - _DS1841_LUT
 
     @lut_selection.setter

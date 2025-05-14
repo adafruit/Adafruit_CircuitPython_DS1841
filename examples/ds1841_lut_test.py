@@ -2,9 +2,11 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 import busio
 from analogio import AnalogIn
+
 import adafruit_ds1841
 
 
