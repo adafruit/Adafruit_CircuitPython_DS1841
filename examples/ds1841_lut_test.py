@@ -39,9 +39,9 @@ while True:
         ds.lut_selection = i
         # for printing to serial terminal:
         print(
-            "\tLUTAR/LUT Selection: %s" % hex(ds.lut_selection),
-            "\tWiper = %d" % ds.wiper,
-            "\tWiper Voltage: %f" % wiper_voltage(wiper_pin),
+            f"\tLUTAR/LUT Selection: {hex(ds.lut_selection)}",
+            f"\tWiper = {ds.wiper:d}",
+            f"\tWiper Voltage: {wiper_voltage(wiper_pin):f}",
         )
         time.sleep(0.5)
 
